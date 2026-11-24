@@ -61,6 +61,13 @@ def main() -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(ROAST)
+    # Round-trip check: the file on disk must be byte-identical to the
+    # validated line, so a stray newline or encoding slip can never
+    # silently change the judged text.
+    with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
+        written = f.read()
+    if written != ROAST:
+        raise ValueError("entry.txt round-trip mismatch: file != ROAST")
     print(f"Wrote {len(ROAST)}-character roast to {OUTPUT_FILE}")
 
 
